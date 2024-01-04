@@ -1,0 +1,18 @@
+xyz: "rahm_unsolv_rehydrogen_reorg_221.xyz"
+sim: equil
+center: True
+population:
+  acrylonitrile: 16
+  methane: 42
+params: "steveson2.prm"
+box_dims:
+  - [4.2, 5, 9.0]
+  - [-4.2, -5, -9.0]
+thermo:
+  - "step"
+  - "etotal"
+  - "ke"
+  - "pe"
+  - "temp"
+  - "press"
+velocity: "none"
