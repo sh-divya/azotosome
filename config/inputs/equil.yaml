@@ -36,11 +36,15 @@ job_str: |-
   # velocity $VEL$ create 94.0 12345 rot yes dist gaussian
   neigh_modify check yes every 1 delay 0
 
-  fix 1 all npt temp 94.0 94.0 100.0 iso 1.4 1.4 500.0
+  fix 1 all nvt temp 94.0 94.0 100.0
   run 6000000
   unfix 1
 
-  fix 2 all nvt temp 94.0 94.0 100.0
+  # fix 2 all npt temp 94.0 94.0 100.0 z 1.4 1.4 500.0
+  # run 2000000
+  # unfix 2
+
+  fix 3 all npt temp 94.0 94.0 100.0 iso 1.4 1.4 500.0
   run 6000000
 
   

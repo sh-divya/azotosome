@@ -1,4 +1,4 @@
-from squid import files, structures
+from squid import files, structures, geometry
 from pathlib import Path
 from copy import deepcopy
 
@@ -49,10 +49,33 @@ def make_supercell(xyz, repeat, dist):
     name = str(f"{xyz.split('.')[0]}_{''.join(repeat)}.xyz")
     return name, files.write_xyz(supercell, str(struct_path / name))
 
-def place_acryls(stagger=False):
-     pass
+def place_acryls(num, stagger=False, distance=2.0):
+    acryl = files.read_cml(str(struct_path / "acrylonitrile.cml"))[0]
+    cog = geometry.get_center_of_mass(acryl.atoms)
+    length = int(num ** 0.5)
+    monolayer = []
+    row = 0
+    rot_mat = geometry.rotation_matrix([0, 1, 0], 90)
+    rot_atoms = geometry.align_centroid(acryl.atoms)
+
+    for atom1, atom2 in zip(acryl.atoms, rot_atoms):
+        atom1.set_position(atom2.flatten())
+    acryl.rotate(rot_mat)
+    for n in range(num):
+        new_mol = deepcopy(acryl)
+        if n % 2 or row % 2:
+            rot_mat = geometry.rotation_matrix([1, 0, 0], 180)
+            new_mol.rotate(rot_mat)
+        if n == length:
+            new_mol.translate(0.0, row * distance, 0.0)
+            row += 1
+        new_mol.translate([n * distance, 0.0, 0.0])
+        monolayer.append(new_mol)
+        
+    frame = [atom for mol in monolayer for atom in mol.atoms]
+    files.write_xyz(frame, str(struct_path / f"custom_azotosome_{num}.xyz"))
 
 if __name__ == "__main__":
     # box_info("rahm_unsolv_rehydrogen_reorg.xyz")
     # make_supercell("rahm_unsolv_rehydrogen_reorg.xyz", [2, 2, 1], [3.2, 4.0, 3.5])
-    place_acryls()
+    place_acryls(16)

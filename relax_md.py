@@ -84,12 +84,15 @@ def set_coords(mol_list, coords, name, param, box_dims, center=False):
         cog = -1 * get_center_of_mass(coords[: atom_pops[0]])
         for a, atom in enumerate(acryl.atoms):
             atom.translate(cog)
-    try:
+
+    if coords[atom_pops[0]:]:
         meth = solvent(num2, coords[atom_pops[0] :], acryl, param)
         if center:
             for atom in meth.atoms[coords[atom_pops[0]] :]:
                 atom.translate(cog)
-    except IndexError:
+        else:
+            pass
+    else:
         meth = solvent(num2, [], acryl, param)
 
     return meth
@@ -126,10 +129,10 @@ def write_input(input_script, cfg, sys):
 
 
 @click.command()
-@click.option("--system", default="rahm_small_more")
+@click.option("--system", default="221_lpg")
 @click.option("--name", default=None)
 @click.option("--walltime", default="4:0:0")
-@click.option("--cores", default=2)
+@click.option("--cores", default=6)
 @click.option("--debug", is_flag=True)
 def create_membrane(system, name, walltime, cores, debug):
     systems_path = config_path / "systems"

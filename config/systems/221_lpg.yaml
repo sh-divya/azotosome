@@ -1,13 +1,13 @@
-xyz: "rahm_unsolv_rehydrogen_reorg_221.xyz"
+xyz: "rahm_monolayer_16.xyz"
 sim: equil
 center: True
 population:
   acrylonitrile: 16
-  methane: 42
+  methane: 48
 params: "ligpargen.prm"
 box_dims:
-  - [4.2, 5, 9.0]
-  - [-4.2, -5, -9.0]
+  - [6.2, 7.5, 9.25]
+  - [-6.2, -7.5, -9.25]
 thermo:
   - "step"
   - "etotal"
