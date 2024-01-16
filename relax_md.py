@@ -38,7 +38,6 @@ def solvent(num, coords, box, param):
             atom.label = str(label)
 
     mols = [deepcopy(base_meth) for _ in range(num)]
-    # return box
     if len(coords) > 0:
         atoms = []
         for m in mols:
@@ -48,7 +47,6 @@ def solvent(num, coords, box, param):
         for a, c in zip(mols, coords):
             atom.set_position(c.flatten())
     else:
-        # num = num // 2
         max_x = box.xhi
         min_x = box.xlo
 
@@ -131,7 +129,7 @@ def write_input(input_script, cfg, sys):
 @click.command()
 @click.option("--system", default="221_lpg")
 @click.option("--name", default=None)
-@click.option("--walltime", default="4:0:0")
+@click.option("--walltime", default="2:0:0")
 @click.option("--cores", default=6)
 @click.option("--debug", is_flag=True)
 def create_membrane(system, name, walltime, cores, debug):

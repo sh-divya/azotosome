@@ -12,7 +12,6 @@ job_str: |-
 
   read_data $DATA$
   group azo id <= $ATOMS$
-  group nitro type 4
   group meth subtract all azo
   group none subtract all azo meth
 
@@ -36,14 +35,11 @@ job_str: |-
   timestep 1.0
   neigh_modify check yes every 1 delay 0
 
-  fix 1 nitro setforce 0.0 0.0 0.0
-  fix 2 all nvt temp 94.0 94.0 100.0
-  run 2000000
+  fix 1 all nvt temp 94.0 94.0 100.0
+  run 6000000
   unfix 1
-  run 4000000
-  unfix 2
 
-  fix 3 all npt temp 94.0 94.0 100.0 iso 1.4 1.4 500.0  
+  fix 2 all npt temp 94.0 94.0 100.0 x 1.4 1.4 500.0 y 1.4 1.4 500.0 z 1.4 1.4 500.0 couple xy
   run 6000000
 
   
