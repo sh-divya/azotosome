@@ -17,7 +17,7 @@ EPS = 1
 
 
 def monolayer(num, coords, box, param):
-    base_acryl = files.read_cml(str(struct_path / "acrylonitrile.cml"))[0]
+    base_acryl = files.read_cml(str(struct_path / "scaled_acryl.cml"))[0]
     with open(str(param_path / f"acrylonitrile_{param}.labels")) as fobj:
         labels = map(int, fobj.read().split("\n"))
         for atom, label in zip(base_acryl.atoms, labels):
@@ -30,22 +30,22 @@ def monolayer(num, coords, box, param):
     return box
 
 
-def solvent(num, coords, box, param):
+def solvent(num, coords, box, param, zstart=4.0):
+    mol_len = 5
     base_meth = files.read_cml(str(struct_path / "methane.cml"))[0]
     with open(str(param_path / f"methane_{param}.labels")) as fobj:
         labels = map(int, fobj.read().split("\n"))
         for atom, label in zip(base_meth.atoms, labels):
             atom.label = str(label)
 
-    mols = [deepcopy(base_meth) for _ in range(num)]
+    # mols = [deepcopy(base_meth) for _ in range(num)]
     if len(coords) > 0:
-        atoms = []
-        for m in mols:
+        for i in range(num):
+            m = deepcopy(base_meth)
+            for j, atom in enumerate(m.atoms):
+                c = coords[i * mol_len + j]
+                atom.set_position(c.flatten())
             box.add(m)
-            for a in m.atoms:
-                atoms.append(a)
-        for a, c in zip(mols, coords):
-            atom.set_position(c.flatten())
     else:
         max_x = box.xhi
         min_x = box.xlo
@@ -55,8 +55,8 @@ def solvent(num, coords, box, param):
 
         # max_z = max([a.z for a in box.atoms]) - EPS
         # min_z = min([a.z for a in box.atoms]) + EPS
-        max_z = 4.0
-        min_z = -4.0
+        max_z = zstart
+        min_z = -1 * zstart
         constraint = f"outside box {min_x:.1f} {min_y:.1f} {min_z:.1f} {max_x:.1f} {max_y:.1f} {max_z:.1f}"
         packmol(
             box,
@@ -65,13 +65,13 @@ def solvent(num, coords, box, param):
             additional=constraint,
             extra_block_at_end="nloop0 10000",
             persist=True,
-            tolerance=2.0,
+            tolerance=1.0,
         )
 
     return box
 
 
-def set_coords(mol_list, coords, name, param, box_dims, center=False):
+def set_coords(mol_list, coords, name, param, box_dims, solv_start=False, center=False):
     num1, num2 = mol_list
     mol_lens = [7, 4]
     atom_pops = [l * c for l, c in zip(mol_lens, [num1, num2])]
@@ -86,13 +86,17 @@ def set_coords(mol_list, coords, name, param, box_dims, center=False):
     if coords[atom_pops[0]:]:
         meth = solvent(num2, coords[atom_pops[0] :], acryl, param)
         if center:
-            for atom in meth.atoms[coords[atom_pops[0]] :]:
+            for atom in meth.atoms[atom_pops[0]:]:
                 atom.translate(cog)
+            # files.write_xyz(meth.atoms, "tmp.xyz")
+            # raise Exception
         else:
             pass
     else:
-        meth = solvent(num2, [], acryl, param)
-
+        if solv_start:
+            meth = solvent(num2, [], acryl, param, zstart=solv_start)
+        else:
+            meth = solvent(num2, [], acryl, param)
     return meth
 
 
@@ -142,6 +146,10 @@ def create_membrane(system, name, walltime, cores, debug):
             coords = files.read_xyz(str(struct_path / config["xyz"]))
             counts = config["population"]
             num1, num2 = counts["acrylonitrile"], counts["methane"]
+            try:
+                solv_start = config["meth_start"]
+            except KeyError:
+                solv_start = False
             if name == None:
                 config["job_name"] = yaml_file.split(".")[0]
             else:
@@ -152,6 +160,7 @@ def create_membrane(system, name, walltime, cores, debug):
                 config["job_name"],
                 config["params"].split(".")[0],
                 box_dims=config["box_dims"],
+                solv_start=solv_start,
                 center=config["center"],
             )
             inp_str = write_input(config["sim"], config, sys)
@@ -163,7 +172,7 @@ def create_membrane(system, name, walltime, cores, debug):
                     inp_str,
                     nprocs=cores,
                     walltime=walltime,
-                    queue="defq",
+                    queue="shared",
                     pair_coeffs_in_data_file=False,
                     prebash="source /data/apps/go.sh\nml cl-lammps\n"
                 )

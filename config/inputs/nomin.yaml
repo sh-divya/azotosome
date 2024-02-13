@@ -4,7 +4,7 @@ job_str: |-
   atom_style full
   kspace_style pppm 5e-4
 
-  pair_style lj/cut/coul/long 10.0
+  pair_style lj/cut/coul/long 8.0
   bond_style harmonic
   angle_style harmonic
   dihedral_style opls
@@ -30,15 +30,16 @@ job_str: |-
   thermo_style custom $THERMO$
 
   timestep 1.0
+  # velocity $VEL$ create 94.0 12345 rot yes dist gaussian
   neigh_modify check yes every 1 delay 0
 
-  fix 1 all nve/limit 0.1
+  fix 2 all nve/limit 0.1
   run 1000000
-  unfix 1
-
-  fix 2 all nvt temp 94.0 94.0 100.0  
-  run 5000000
   unfix 2
+
+  fix 1 all nvt temp 94.0 94.0 100.0
+  run 5000000
+  unfix 1
 
   fix 3 all npt temp 94.0 94.0 100.0 iso 1.4 1.4 500.0
   run 6000000
