@@ -6,7 +6,8 @@ __pycache__/
 # LAMMPS specific dirs
 data/
 sys_packmol/
-structs/
+structs/*.xyz
+structs/*.dump
 lammps/
 
 # C extensions
