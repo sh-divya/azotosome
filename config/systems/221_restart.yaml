@@ -1,0 +1,25 @@
+xyz: /scratch16/pclancy3/divya/azotosome/cp2k/221_md/res2-1_13000.restart
+sim: nvt
+center: True
+population:
+  acrylonitrile: 16
+  methane: 48
+params: "stevenson2.prm"
+box_dims:
+  # - [5.6, 6.8, 9.1]
+  # - [-5.6, -6.8, -9.1]
+  # box14 - [7, 7, 9.1]
+  # - [-7, -7, -9.1]
+  # box2- [6, 7, 10.5]
+  # - [-6, -7, -10.5]
+  - [5.6, 6.85, 10.5]
+  - [-5.6, -6.85, -10.5]
+meth_start: 3.0
+thermo:
+  - "step"
+  - "etotal"
+  - "ke"
+  - "pe"
+  - "temp"
+  - "press"
+velocity: "none"
