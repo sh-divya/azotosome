@@ -1,0 +1,9 @@
+defaults:
+  - _self_
+  - inputs: dzvp_go
+  - systems: 221_js2
+
+job_name: temp
+cores: 12
+walltime: "12:00:00"
+restart: True

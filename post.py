@@ -161,13 +161,16 @@ def sim_summary(xvals, yvals):
     return mean, error
 
 
-def plot_results(xvals, yvals, name, cols, units=None):
+def plot_results(xvals, yvals, name, cols, units=None, save=True, fig_ax=None):
     window = 200
     steps = np.convolve(xvals[8:], np.ones(window), "valid") / (window * 1000000)
     x = thermo_dix[cols[0]]
     try:
         yvals = list(zip(*yvals))
-        fig, ax = plt.subplots(len(yvals), 1, figsize=[15, 12])
+        if fig_ax is None:
+            fig, ax = plt.subplots(len(yvals), 1, figsize=[15, 12])
+        else:
+            fig, ax = fig_ax
         fig.supxlabel(x)
         for i, y in enumerate(yvals):
             res = np.convolve(y[8:], np.ones(window), "valid") / window
@@ -175,15 +178,21 @@ def plot_results(xvals, yvals, name, cols, units=None):
             ax[i].set_ylabel(thermo_dix[cols[1:][i]])
     except TypeError:
         yvals = yvals[8:]
-        fig, ax = plt.subplots(1, 1)
+        if fig_ax is None:
+            fig, ax = plt.subplots(1, 1)
+        else:
+            fig, ax = fig_ax
         res = np.convolve(yvals, np.ones(window), "valid") / window
         ax.plot(steps[-len(res) :], res)
         fig.supxlabel(x)
         ax.set_ylabel(thermo_dix[cols[1]])
 
-    fig.suptitle(f"Moving average for {name}")
-    fig.tight_layout()
-    fig.savefig(str(BASE_PATH / "plots" / f"{name}_energies.png"))
+    if save:
+        fig.suptitle(f"Moving average for {name}")
+        fig.tight_layout()
+        fig.savefig(str(BASE_PATH / "plots" / f"{name}_energies.png"))
+    else:
+        return fig, ax
 
 
 def get_mvee_orientation(frame):
@@ -221,7 +230,7 @@ def get_vec_orientation(frame, ang_idx=[2, 3]):
     return centers, radii
 
 
-def ensemble_angles(name, frame_idx, mols, box_dims):
+def ensemble_angles(name, frame_idx, mols, box_dims, save=True):
     xyz_file = STRUCT_DIR / f"{name}.xyz"
     all_frames = files.read_xyz(str(xyz_file))
     frames = [all_frames[idx] for idx in frame_idx]
@@ -235,9 +244,12 @@ def ensemble_angles(name, frame_idx, mols, box_dims):
         radii.append(r)
     centers = np.mean(centers, axis=0)
     radii = np.mean(radii, axis=0)
-    fig = plot_sys(centers, radii, box_size)
+    fig, ax = plot_sys(centers, radii, box_size)
 
-    fig.savefig(BASE_PATH / "plots" / f"{name}_angles.png")
+    if save:
+        fig.savefig(BASE_PATH / "plots" / f"{name}_angles.png")
+    else:
+        return fig, ax
 
 
 
@@ -253,16 +265,30 @@ def plot_sys(points, vectors, size):
     
     fig, ax = plt.subplots(1, 1)
     ax.quiver(list(x), list(y), list(u), list(v))
-    return fig
+    return fig, ax
+
+
+def compare_runs(xvals, yvals, sims, cols):
+    labels = ["Staggered", "Flat"]
+    fig_ax = plt.subplots(1, 1)
+    for i, (x, y) in enumerate(zip(xvals, yvals)):
+        plot_results(x, y, sims[i], cols, save=False, fig_ax=fig_ax)
+    fig, ax = fig_ax
+    for line, label in zip(ax.lines, labels):
+        line.set_label(label)
+    ax.legend()
+    fig.savefig(str(BASE_PATH / "plots" / "temp1.png"))
 
 
 if __name__ == "__main__":
-    task = "221_js2"
-    process(task, "geom")
+    task1 = "221_js2"
+    # process(task, "geom")
     # results, steps, cols = process(task, idx=[0, 1, 2, 3, 4])
     # results, steps, cols = process(task, idx=[0, 1, 2, 3])
     # results, steps, cols = process(task, idx=[0, 1, 4, 5])
-    # results, steps, cols = process(task, idx=[0, 1])
+    results1, steps1, cols1 = process(task1, idx=[0, 1])
+    task2 = "221_js2_flat"
+    results2, steps2, cols2 = process(task2, idx=[0, 1])
     # annot = f"Mean:{mean:.2f}\nError:{error:.2f}"
-
+    compare_runs([steps1, steps2], [results1, results2], [task1, task2], cols1)
     # plot_results(steps, results, task, cols)

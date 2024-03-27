@@ -1,6 +1,7 @@
 from squid import files, structures, geometry
 from pathlib import Path
 from copy import deepcopy
+import numpy as np
 
 BASE_PATH = Path(__file__).parent
 struct_path = BASE_PATH / "structs"
@@ -35,10 +36,10 @@ def make_supercell(prefix, xyz, repeat, dist, offset):
         xyz = [xyz]
         offset = [offset]
     supercell = []
-    rot_mat = geometry.rotation_matrix([0, 1, 0], 90)
+    # rot_mat = geometry.rotation_matrix([0, 1, 0], 90)
     for f, fptr in enumerate(xyz):
         og = files.read_xyz(str(struct_path / fptr))
-        og = geometry.rotate_atoms(og, rot_mat)
+        # og = geometry.rotate_atoms(og, rot_mat)
         displace = offset[f]
         for atoms in og:
             atoms.translate(displace)
@@ -68,9 +69,9 @@ def place_acryls(num, stagger=False, distance=2.0, nx=None, prefix="custom_azoto
         length = nx
     monolayer = []
     row = 0
-    # rot_mat = geometry.rotation_matrix([1, 0, 0], 90)
-    # acryl.rotate(rot_mat)
-    # rot_mat = geometry.rotation_matrix([0, 0, 1], 90)
+    rot_mat = geometry.rotation_matrix([0, 0, 1], 180)
+    acryl.rotate(rot_mat)
+    # rot_mat = geometry.rotation_matrix([0, 1, 0], 90)
     # acryl.rotate(rot_mat)
     if isinstance(distance, float):
         distance = [distance, distance, 0]
@@ -104,21 +105,51 @@ def conv_density(density=0.526, mol_mass=16):
     m3_to_A3 = 1e30
     return density * kg_to_molnum / m3_to_A3
 
+def spacing(xyz_file):
+    system = files.read_xyz(str(struct_path / xyz_file))
+    xyz = []
+    dist = []
+    for a, atom in enumerate(system[::7]):
+        single = [system[a + i] for i in range(7)]
+        com = geometry.get_center_of_mass(single)
+        xyz.append(com)
+
+    x, y, z = [], [], []
+    for pos1 in xyz:
+        for pos2 in xyz:
+            if (pos1 != pos2).all():
+                tmp = pos1 - pos2
+                x.append(np.abs(tmp[0]))
+                y.append(np.abs(tmp[1]))
+                z.append(np.abs(tmp[2]))
+                tmp = np.linalg.norm(tmp)
+                dist.append(tmp)
+
+    print("Min x", min(x))
+    print("Min y", min(y))
+    print("Min z", min(z))
+
 
 if __name__ == "__main__":
     # print(conv_density(438.9))
     # box_info("rahm_unsolv_rehydrogen_reorg.xyz")
-    prefix = "azo_meth"
-    num = "441"
-    make_supercell(
-        prefix,
-        ["tianle_unit.xyz", "tianle_meth.xyz", "tianle_meth.xyz"],
-        [4, 4, 1],
-        [3.5, 3.5, 0],
-        offset=[[0, 0, 0], [0, 0, 7], [0, 0, -7]],
-    )
+    # prefix = "azo_meth_flat"
+    # num = "221"
+    # make_supercell(
+    #     prefix,
+    #     ["flat_4.xyz", "tianle_meth.xyz", "tianle_meth.xyz"],
+    #     [2, 2, 1],
+    #     [3.5, 3.5, 0],
+    #     offset=[[0, 0, 0], [3, 0, 7], [3, 0, -5]],
+    # )
     # box_info("rahm_unsolv_rehydrogen_reorg_441.xyz")
-    # num = 16
-    # prefix = "tianle"
-    # place_acryls(num, distance=[3.5, 3, -2.058], prefix="tianle")
+    num = 1024
+    prefix = "stag"
+    # num = 4
+    place_acryls(num, distance=[3.5, 3.52, -2.058], prefix=prefix)
+    # place_acryls(num, distance=[3.5, 3.52, 0], prefix="flat")
     box_info(f"{prefix}_{num}.xyz")
+    # box_info(f"flat_4.xyz")
+    # spacing("rahm_unsolv_rehydrogen_reorg.xyz")
+    # print(conv_density(459))
+

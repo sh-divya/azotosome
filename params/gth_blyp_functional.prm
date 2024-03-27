@@ -1,0 +1,26 @@
+# URL: https://cp2k-basis.pierrebeaujean.net/api/pseudopotentials/GTH-BLYP/data?elements=H,C,N
+# BUILD: 22/02/2023 @ 10:31
+# FETCHED: 19/02/2024 @ 22:06
+# ---
+# H [0|1s]
+# SOURCE: https://github.com/cp2k/cp2k/raw/786bc82ff9ded3e1f761cba6d8e25c3c9fe19bb1/data/GTH_POTENTIALS#L58
+H  GTH-BLYP-q1 GTH-BLYP
+1
+      0.20000000   2    -4.19596147     0.73049821
+     0
+# C [2|2s2p]
+# SOURCE: https://github.com/cp2k/cp2k/raw/786bc82ff9ded3e1f761cba6d8e25c3c9fe19bb1/data/GTH_POTENTIALS#L85
+C  GTH-BLYP-q4 GTH-BLYP
+2 2
+      0.33806609   2    -9.13626871     1.42925956
+     2
+      0.30232223   1     9.66551228
+      0.28637912   0
+# N [2|2s3p]
+# SOURCE: https://github.com/cp2k/cp2k/raw/786bc82ff9ded3e1f761cba6d8e25c3c9fe19bb1/data/GTH_POTENTIALS#L92
+N  GTH-BLYP-q5 GTH-BLYP
+2 3
+      0.28287094   2   -12.73646720     1.95107926
+     2
+      0.25523449   1    13.67893172
+      0.24313253   0
