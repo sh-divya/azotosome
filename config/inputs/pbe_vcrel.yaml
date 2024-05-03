@@ -1,0 +1,46 @@
+job_str: |-
+  &CONTROL
+    calculation = 'vc-relax'
+    etot_conv_thr = 3.80d-05
+    forc_conv_thr = 3.80d-05
+    max_seconds = $TIME$
+    restart_mode = $START$
+    outdir = $QEDIR$/$NAME$
+    prefix = '$NAME$'
+    wfcdir = '$QEDIR$/$NAME$'
+    pseudo_dir = '$PRMDIR$/pseudo'
+    tprnfor = .true.
+    tstress = .true.
+    verbosity = 'high'
+  /
+  &SYSTEM
+    degauss = 2.2049585400d-02
+    ecutrho = 205.8
+    ecutwfc = 51.45
+    ibrav = $IBRAV$
+  $DIMENSIONS$
+    nat = $NUM$
+    nosym = .false.
+    nspin = 1
+    ntyp = 3
+    vdw_corr = 'grimme-d3'
+  /
+  &ELECTRONS
+    conv_thr = 1.00d-05
+    electron_maxstep = 1000
+    mixing_beta = 4.00d-01
+    mixing_mode = 'local-TF'
+  /
+  &IONS
+  /
+  &CELL
+    cell_dofree='ibrav'
+  /
+  ATOMIC_SPECIES
+    1 1.007 H.pbe-rrkjus_psl.1.0.0.UPF
+    2 12.01 C.pbe-n-kjpaw_psl.1.0.0.UPF
+    3 14.01 N.pbe-n-radius_5.UPF
+  ATOMIC_POSITIONS angstrom
+  $POSITIONS$
+  K_POINTS automatic
+  $KPOINTS$ 0 0 0

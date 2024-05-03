@@ -1,15 +1,15 @@
-xyz: "tianle_azo_meth_221.xyz"
+xyz: "rahm_pn21a_small_222.xyz"
 sim: nvt
 center: True
 population:
-  acrylonitrile: 16
-  methane: 48
+  acrylonitrile: 32
+  methane: 0
 params: "stevenson2.prm"
 box_dims:
-  - [5.71, 6.82, 10.5]
-  - [-5.71, -6.82, -10.5]
+  - [14.4, 10.8, 16.72]
+  - [0, 0, 0]
 cell_shape:
-  sg: None
+  sg: 0
   angles: [90, 90, 90]
 meth_start: 3.0
 thermo:

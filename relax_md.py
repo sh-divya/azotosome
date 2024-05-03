@@ -83,20 +83,23 @@ def set_coords(mol_list, coords, name, param, box_dims, solv_start=False, center
         for a, atom in enumerate(acryl.atoms):
             atom.translate(cog)
 
-    if coords[atom_pops[0]:]:
+    if coords[atom_pops[0] :]:
         meth = solvent(num2, coords[atom_pops[0] :], acryl, param)
         if center:
-            for atom in meth.atoms[atom_pops[0]:]:
+            for atom in meth.atoms[atom_pops[0] :]:
                 atom.translate(cog)
             # files.write_xyz(meth.atoms, "tmp.xyz")
             # raise Exception
         else:
             pass
     else:
-        if solv_start:
-            meth = solvent(num2, [], acryl, param, zstart=solv_start)
+        if num2 > 0:
+            if solv_start:
+                meth = solvent(num2, [], acryl, param, zstart=solv_start)
+            else:
+                meth = solvent(num2, [], acryl, param)
         else:
-            meth = solvent(num2, [], acryl, param)
+            return acryl
     return meth
 
 
@@ -111,7 +114,7 @@ def write_input(input_script, cfg, sys):
     )["job_str"]
 
     sys.set_types(opls_file=str(param_path / cfg["params"]))
-        
+
     og_name = sys.name
     data_path = BASE_PATH / "data"
     sys.name = str(data_path / og_name)
@@ -131,12 +134,16 @@ def write_input(input_script, cfg, sys):
 
 
 @click.command()
-@click.option("--system", default="221_lpg")
+@click.option("--system", default="221_js2")
 @click.option("--name", default=None)
 @click.option("--walltime", default="2:0:0")
 @click.option("--cores", default=6)
 @click.option("--debug", is_flag=True)
 def create_membrane(system, name, walltime, cores, debug):
+    base_create_membrane(system, name, walltime, cores, debug)
+
+
+def base_create_membrane(system, name, walltime, cores, debug):
     systems_path = config_path / "systems"
     all_sys = [str(file.name) for file in systems_path.iterdir()]
     yaml_file = system + ".yaml"
@@ -174,7 +181,7 @@ def create_membrane(system, name, walltime, cores, debug):
                     walltime=walltime,
                     queue="shared",
                     pair_coeffs_in_data_file=False,
-                    prebash="source /data/apps/go.sh\nml cl-lammps\n"
+                    prebash="source /data/apps/go.sh\nml cl-lammps\n",
                 )
 
 

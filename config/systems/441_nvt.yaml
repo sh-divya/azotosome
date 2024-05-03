@@ -1,0 +1,21 @@
+xyz: "rahm_unsolv_rehydrogen_reorg_441.xyz"
+sim: nvt
+center: True
+population:
+  acrylonitrile: 64
+  methane: 120
+params: "ligpargen.prm"
+box_dims:
+  - [11.5, 16.0, 9.25]
+  - [-11.5, -16.0, -9.25]
+cell_shape:
+  sg: None
+  angles: [90, 90, 90
+thermo:
+  - "step"
+  - "etotal"
+  - "ke"
+  - "pe"
+  - "temp"
+  - "press"
+velocity: "none"

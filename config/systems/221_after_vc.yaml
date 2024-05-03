@@ -1,4 +1,4 @@
-xyz: "tianle_azo_meth_221.xyz"
+xyz: "221_cell.xyz"
 sim: nvt
 center: True
 population:
@@ -6,8 +6,8 @@ population:
   methane: 48
 params: "stevenson2.prm"
 box_dims:
-  - [5.71, 6.82, 10.5]
-  - [-5.71, -6.82, -10.5]
+  - [5.61, 6.83, 9.15]
+  - [-5.61, -6.83, -9.15]
 cell_shape:
   sg: None
   angles: [90, 90, 90]

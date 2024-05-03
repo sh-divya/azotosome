@@ -2,6 +2,7 @@ from supplements.time_energy_gen import read_log_or_out
 from supplements.bin_tc_error import tb_P_inv
 from squid.utils.units import convert_energy
 from squid import files, geometry
+from ase.io import read
 
 import matplotlib.pyplot as plt
 from pathlib import Path
@@ -17,6 +18,7 @@ BASE_PATH = Path(__file__).parent
 LAMMPS_DIR = BASE_PATH / "lammps"
 STRUCT_DIR = BASE_PATH / "structs"
 CONFIG_PATH = BASE_PATH / "config"
+QE_DIR = BASE_PATH / "qe"
 
 thermo_dix = {
     "step": "Step",
@@ -153,8 +155,8 @@ def process(system, task="log", name=None, idx=None):
 
 
 def sim_summary(xvals, yvals):
-    mean = np.mean(yvals[-10000:])
-    error = np.std(yvals[-10000:])
+    mean = np.mean(yvals[-5000:])
+    error = np.std(yvals[-5000:])
     # _, _, t_c, _ = tb_P_inv(steps, results, range(10, 100, 10), 5, 9)
     # print(t_c)
 
@@ -252,7 +254,6 @@ def ensemble_angles(name, frame_idx, mols, box_dims, save=True):
         return fig, ax
 
 
-
 def plot_sys(points, vectors, size):
     print(points)
     print(vectors)
@@ -262,14 +263,14 @@ def plot_sys(points, vectors, size):
     #     print(p, x[i], y[i])
     vectors = [v[:2] for v in vectors]
     u, v = zip(*vectors)
-    
+
     fig, ax = plt.subplots(1, 1)
     ax.quiver(list(x), list(y), list(u), list(v))
     return fig, ax
 
 
 def compare_runs(xvals, yvals, sims, cols):
-    labels = ["Staggered", "Flat"]
+    labels = ["tianle_421", "tianle_241"]
     fig_ax = plt.subplots(1, 1)
     for i, (x, y) in enumerate(zip(xvals, yvals)):
         plot_results(x, y, sims[i], cols, save=False, fig_ax=fig_ax)
@@ -277,18 +278,37 @@ def compare_runs(xvals, yvals, sims, cols):
     for line, label in zip(ax.lines, labels):
         line.set_label(label)
     ax.legend()
-    fig.savefig(str(BASE_PATH / "plots" / "temp1.png"))
+    fig.savefig(str(BASE_PATH / "plots" / "tinale_azo_32.png"))
+
+
+def process_qe_out(job_name):
+    job_dir = QE_DIR / job_name
+    out_files = [
+        fptr for fptr in job_dir.iterdir() if str(fptr).split(".")[-1] == "out"
+    ]
+    out_files.sort(key=os.path.getctime)
+    for fptr in out_files:
+        res = read(fptr, format="espresso-out")
+        print(res)
+
+    return out_files
 
 
 if __name__ == "__main__":
-    task1 = "221_js2"
+    # job = "pn21a"
+    # print(process_qe_out(job))
+    task1 = "tianle_421"
+    name1 = "tianle_421"
     # process(task, "geom")
     # results, steps, cols = process(task, idx=[0, 1, 2, 3, 4])
     # results, steps, cols = process(task, idx=[0, 1, 2, 3])
     # results, steps, cols = process(task, idx=[0, 1, 4, 5])
-    results1, steps1, cols1 = process(task1, idx=[0, 1])
-    task2 = "221_js2_flat"
-    results2, steps2, cols2 = process(task2, idx=[0, 1])
+    results1, steps1, cols1 = process(task1, name=name1, idx=[0, 1])
+    # print(sim_summary(steps1, results1))
+    task2 = "tianle_241"
+    name2 = "tianle_241"
+    results2, steps2, cols2 = process(task2, name=name2, idx=[0, 1])
+    # print(sim_summary(steps2, results2))
     # annot = f"Mean:{mean:.2f}\nError:{error:.2f}"
     compare_runs([steps1, steps2], [results1, results2], [task1, task2], cols1)
-    # plot_results(steps, results, task, cols)
+    # plot_results(steps1, results1, task1, cols1)

@@ -1,0 +1,10 @@
+defaults:
+  - _self_
+  - inputs: pbe_free_vcrel
+  - systems: azo_ortho
+
+job_name: temp
+cores: 81
+walltime: "72:00:00"
+restart: False
+kpoints: "9-9-1"

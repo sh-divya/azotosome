@@ -1,19 +1,21 @@
-xyz: "rahm_monolayer_16.xyz"
+xyz: "tianle_16.xyz"
 sim: equil
 center: True
 population:
   acrylonitrile: 16
-  methane: 48
-params: "ligpargen.prm"
+  methane: 26
+params: "steveson2.prm"
+# box_dims:
+#   - [5.5, 6, 9.0]
+#   - [-5.5, -6, -9.0]
 box_dims:
-  - [6.2, 7.5, 9.25]
-  - [-6.2, -7.5, -9.25]
+  - [7, 7, 9.0]
+  - [-7, -7, -9.0]
 thermo:
   - "step"
   - "etotal"
   - "ke"
   - "pe"
-  - "c_pe"
   - "temp"
   - "press"
 velocity: "none"

@@ -18,7 +18,7 @@ def write_input_script(inp_base, job_name, sys, restart):
     dims = " ".join(dims)
     inp_str = inp_base.replace("$JOB_NAME$", job_name)
     inp_str = inp_str.replace("$PRM_PATH$", str(param_path))
-    if restart:
+    if not restart:
         inp_str = inp_str.replace("$XYZ_FILE$", str(xyz_path / sys.xyz))
         inp_str = inp_str.replace("$DIMENSIONS$", dims)
     else:

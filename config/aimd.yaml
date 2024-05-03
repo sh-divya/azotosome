@@ -6,4 +6,4 @@ defaults:
 job_name: temp
 cores: 12
 walltime: "12:00:00"
-restart: True
+restart: False

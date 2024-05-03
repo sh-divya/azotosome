@@ -4402,9 +4402,9 @@ charge       83              -0.2400
 charge       84               0.0000
 charge       85               0.0600
 charge       86               0.0000
-charge       87              -0.1150
-charge       88              -0.2300
-charge       89               0.1150
+charge       87              -0.2600
+charge       88              -0.3000
+charge       89               0.2000
 charge       90              -0.1150
 charge       91               0.1150
 charge       92               0.0000
@@ -5009,7 +5009,7 @@ charge      690              -0.6200
 charge      691              -0.7850
 charge      692              -0.7850
 charge      693               0.5500
-charge      694              -0.5600
+charge      694              -0.5000
 charge      695               0.4600
 charge      696              -0.0800
 charge      697              -0.0200

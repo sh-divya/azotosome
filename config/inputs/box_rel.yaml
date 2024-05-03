@@ -29,20 +29,7 @@ job_str: |-
   thermo 50
   thermo_style custom $THERMO$
 
+  fix 1 all box/relax aniso 0.0 vmax 0.001
   min_style cg 
   minimize 1e-25 1e-25 5000 10000
-
-  timestep 1.0
-  neigh_modify check yes every 1 delay 0
-
-  fix 2 all npt temp 94.0 94.0 100.0 z 1.4 1.4 500.0
-  run 6000000
-  unfix 2
-
-  fix 1 all nvt temp 94.0 94.0 100.0
-  run 6000000
-
-
-
-  
 
