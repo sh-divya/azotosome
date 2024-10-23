@@ -158,25 +158,25 @@ if __name__ == "__main__":
     # num_methane = int(a * b * 15 * conv_density(459))
     print(a, b, c)
     # print(num_methane)
-    # prefix = "tianle_azo_meth"
-    # num = "221"
-    # make_supercell(
-    #     prefix,
-    #     ["tianle_azo.xyz", "tianle_meth.xyz", "tianle_meth.xyz"],
-    #     [2, 4, 1],
-    #     [3.5, 3.5, 0],
-    #     offset=[[0, 0, 0], [3, 0, 7], [3, 0, -5]],
-    # )
+    prefix = "tianle_azo_meth"
+    num = "221"
+    make_supercell(
+        prefix,
+        ["tianle_azo.xyz", "tianle_meth.xyz", "tianle_meth.xyz"],
+        [2, 4, 1],
+        [3.5, 3.5, 0],
+        offset=[[0, 0, 0], [3, 0, 7], [3, 0, -5]],
+    )
 
-    # prefix = "tianle_azo"
-    # num = "221"
-    # make_supercell(
-    #     prefix,
-    #     ["tianle_azo.xyz"],
-    #     [2, 2, 1],
-    #     [3.5, 3.5, 0],
-    #     offset=[[0, 0, 0]],
-    # )
+    prefix = "tianle_azo_vac"
+    num = "221"
+    make_supercell(
+        prefix,
+        ["tianle_azo.xyz"],
+        [2, 2, 1],
+        [3.5, 3.5, 0],
+        offset=[[0, 0, 0]],
+    )
 
     # prefix = "stag_azo"
     # num = "221"
